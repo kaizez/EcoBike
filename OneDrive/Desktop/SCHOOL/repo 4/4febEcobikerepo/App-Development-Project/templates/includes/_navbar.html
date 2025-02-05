@@ -1,0 +1,197 @@
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Logo with green leaves -->
+        <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+            <svg width="30" height="30" viewBox="0 0 30 30" class="me-2">
+                <path d="M15,3 Q20,10 25,15 A12,12 0 1,1 5,15 Q10,10 15,3" fill="#2ecc71" />
+                <path d="M15,5 Q19,11 22,15 A9,9 0 1,1 8,15 Q11,11 15,5" fill="#27ae60" />
+            </svg>
+            <span class="fw-bold text-decoration-none">ECOBIKE</span>
+        </a>
+
+        <!-- Toggle button for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <!-- Links for normal users -->
+                {% if not session.get('is_admin') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/viewBikes">View Bikes</a>
+                </li>
+                {% endif %}
+
+                <!-- Links for admin users -->
+                {% if session.get('is_admin') %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Manage Bikes</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/createBike">Create Bikes</a></li>
+                        <li><a class="dropdown-item" href="/retrieveBikes">Retrieve Bikes</a></li>
+                        <li><a class="dropdown-item" href="/viewBikes">View Bikes</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    {% if session.get('is_admin') %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Dashboard</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/dashboard">View Dashboard</a></li>
+                            <li><a class="dropdown-item" href="/dashBoardAdmin">Upload GPX/XML</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                    {% endif %}
+                </li>
+
+                {% if session.get('is_admin') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/manageBikeIDs">Manage Bike IDs</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/orders">Orders</a>
+                </li>
+                {% endif %}
+
+                <!-- Unlock Bikes -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Unlock</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/unlock">Unlock Bikes</a></li>
+                        <li><a class="dropdown-item" href="/lock">Lock Bikes</a></li>
+                    </ul>
+                </li>
+
+                <!-- Report Defects -->
+                <li class="nav-item">
+                    {% if session.get('is_admin') %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Check Defect</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/createDefect">Create Defect</a></li>
+                            <li><a class="dropdown-item" href="/retrieveDefect">Retrieve Defect</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a class="nav-link" href="/createDefect">Report Defect</a>
+                    {% endif %}
+                </li>
+
+                <!-- FAQ -->
+                {% if session.get('is_admin') %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="faqDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        FAQ
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="faqDropdown">
+                        <li><a class="dropdown-item" href="/faq">View FAQ</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/createFAQ">Create FAQ</a></li>
+                        <li><a class="dropdown-item" href="/retrieveFAQ">Manage FAQs</a></li>
+                    </ul>
+                </li>
+            {%else%}
+            <a class="nav-link" href="/faq">FAQ</a>
+            {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/rewards">Rewards</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <img src="{{ url_for('static', filename='profile_pics/' + session.get('profile_picture', 'helmet_pfp.jpg')) }}"
+                             class="rounded-circle"
+                             style="width: 30px; height: 30px; object-fit: cover;">
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('settings') }}">Settings</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Login/Logout Buttons -->
+            <div class="d-flex">
+                {% if 'user_id' in session %}
+                <a href="/logout" class="btn btn-danger ms-2">Logout</a>
+                {% else %}
+                <a href="/login" class="btn btn-success ms-2">Login</a>
+                <a href="/register" class="btn btn-primary ms-2">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Navbar Styles -->
+<style>
+    .navbar {
+        background-color: #ffffff !important;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .nav-link {
+        color: #000 !important;
+        margin: 0 10px;
+        font-weight: 500;
+    }
+
+    .nav-link:hover {
+        color: #2ecc71 !important;
+    }
+
+    .btn {
+        padding: 8px 24px;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin: 0 5px;
+    }
+
+    .btn-success {
+        background-color: #2ecc71;
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: #ffffff;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: #ffffff;
+    }
+
+    .btn-success:hover {
+        background-color: #27ae60;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+    }
+
+    .d-flex {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+</style>

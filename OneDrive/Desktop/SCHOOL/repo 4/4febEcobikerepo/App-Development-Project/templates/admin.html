@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Panel</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+   <!-- Include Navbar -->
+    {% include "includes/_navbar.html" %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Admin Panel</h2>
+            <div>
+                <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+                    Add New Admin
+                </button>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Logout</a>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Section -->
+        <div class="row mb-4">
+            <!-- Total Users Card -->
+            <div class="col-md-4 mb-3">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Users</h5>
+                        <h2 class="mb-2">{{ stats.totalUsers }}</h2>
+                        <span class="badge {% if stats.totalGrowth >= 0 %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ '+' if stats.totalGrowth >= 0 }}{{ stats.totalGrowth }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- Active Users Card -->
+            <div class="col-md-4 mb-3">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Users</h5>
+                        <h2 class="mb-2">{{ stats.activeUsers }}</h2>
+                        <span class="badge {% if stats.activeGrowth >= 0 %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ '+' if stats.activeGrowth >= 0 }}{{ stats.activeGrowth }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- Monthly Rides Card -->
+            <div class="col-md-4 mb-3">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Monthly Rides</h5>
+                        <h2 class="mb-2">{{ stats.monthlyRides }}</h2>
+                        <span class="badge {% if stats.ridesGrowth >= 0 %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ '+' if stats.ridesGrowth >= 0 }}{{ stats.ridesGrowth }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <!-- Growth Chart -->
+            <div class="col-md-8 mb-3">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Users & Rides Growth</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="growthChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- Users Distribution Chart -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Users Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="distributionChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert
+                        {% if category == 'success' %} alert-success
+                        {% elif category == 'info' %} alert-primary
+                        {% elif category == 'danger' or category == 'error' %} alert-danger
+                        {% else %} alert-warning {% endif %}
+                        alert-dismissible fade show text-center" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+        <!-- Admin Users Table -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">Admin Users</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>User ID</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Points</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for username, user_id, email, status, is_admin, points in users %}
+                            {% if is_admin %}
+                            <tr>
+                                <td>{{ username }}</td>
+                                <td>{{ user_id }}</td>
+                                <td>{{ email }}</td>
+                                <td>
+                                    <span class="badge {% if status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ status }}
+                                    </span>
+                                </td>
+                                <td>{{ points }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <!-- Points Update Form -->
+                                        <div class="input-group input-group-sm" style="width: 200px;">
+                                            <input type="number" class="form-control" name="new_points" value="{{ points }}" form="points-form-{{ user_id }}">
+                                            <button type="submit" class="btn btn-primary" form="points-form-{{ user_id }}">Update Points</button>
+                                        </div>
+                                        <form id="points-form-{{ user_id }}" action="{{ url_for('edit_points', user_id=user_id) }}" method="POST"></form>
+
+                                        <!-- Edit Username Button -->
+                                        <a href="{{ url_for('edit', user_id=user_id) }}" class="btn btn-warning">
+                                            Edit Username
+                                        </a>
+
+                                        {% if email != session['user_id'] %}
+                                        <!-- Toggle Admin Status Button -->
+                                        <form action="{{ url_for('toggle_admin', user_id=user_id) }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-info">Remove Admin</button>
+                                        </form>
+
+                                        <!-- Delete User Button -->
+                                        <form action="{{ url_for('delete', user_id=user_id) }}" method="POST" class="d-inline"
+                                              onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Button to Redirect to View Users Page -->
+        <a href="{{ url_for('view_users') }}" class="btn btn-primary mb-3" id="view_users">View Users</a>
+
+        <!-- Regular Users Table -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="card-title mb-0">Regular Users</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>User ID</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Points</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for username, user_id, email, status, is_admin, points in users %}
+                            {% if not is_admin %}
+                            <tr>
+                                <td>{{ username }}</td>
+                                <td>{{ user_id }}</td>
+                                <td>{{ email }}</td>
+                                <td>
+                                    <span class="badge {% if status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ status }}
+                                    </span>
+                                </td>
+                                <td>{{ points }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <!-- Points Update Form -->
+                                        <div class="input-group input-group-sm" style="width: 200px;">
+                                            <input type="number" class="form-control" name="new_points" value="{{ points }}" form="points-form-{{ user_id }}">
+                                            <button type="submit" class="btn btn-primary" form="points-form-{{ user_id }}">Update Points</button>
+                                        </div>
+                                        <form id="points-form-{{ user_id }}" action="{{ url_for('edit_points', user_id=user_id) }}" method="POST"></form>
+
+                                        <!-- Edit Username Button -->
+                                        <a href="{{ url_for('edit', user_id=user_id) }}" class="btn btn-warning">
+                                            Edit Username
+                                        </a>
+
+                                        <!-- Toggle Admin Status Button -->
+                                        <form action="{{ url_for('toggle_admin', user_id=user_id) }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-info">Make Admin</button>
+                                        </form>
+
+                                        <!-- Delete User Button -->
+                                        <form action="{{ url_for('delete', user_id=user_id) }}" method="POST" class="d-inline"
+                                              onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAdminModalLabel">Add New Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('add_admin') }}" method="POST" id="addAdminForm" novalidate>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="admin_email" class="form-label">Email:</label>
+                            <input type="email" class="form-control {% if email_error %}is-invalid{% endif %}"
+                                   id="admin_email" name="email" required
+                                   value="{{ request.form.email if request.form.email else '' }}">
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="admin_username" class="form-label">Username:</label>
+                            <input type="text" class="form-control {% if username_error %}is-invalid{% endif %}"
+                                   id="admin_username" name="username" required
+                                   minlength="3" maxlength="20" pattern="^[a-zA-Z0-9]+$"
+                                   value="{{ request.form.username if request.form.username else '' }}">
+                            <div class="form-text">Username must be 3-20 characters long and contain only letters and numbers.</div>
+                            <div class="invalid-feedback">Invalid username format.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="admin_password" class="form-label">Password:</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control {% if password_error %}is-invalid{% endif %}"
+                                       id="admin_password" name="password" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="admin_password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">Password is required.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="admin_confirm_password" class="form-label">Confirm Password:</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control {% if confirm_password_error %}is-invalid{% endif %}"
+                                       id="admin_confirm_password" name="confirm_password" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="admin_confirm_password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">Passwords do not match.</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Add Admin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const addAdminForm = document.getElementById('addAdminForm');
+            const email = document.getElementById('admin_email');
+            const username = document.getElementById('admin_username');
+            const password = document.getElementById('admin_password');
+            const confirmPassword = document.getElementById('admin_confirm_password');
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+
+            // Function to validate email
+            function validateEmail() {
+                if (!email.value.includes('@') || !email.value.includes('.')) {
+                    email.classList.add('is-invalid');
+                } else {
+                    email.classList.remove('is-invalid');
+                }
+            }
+
+            // Function to validate username
+            function validateUsername() {
+                if (!/^[a-zA-Z0-9]+$/.test(username.value) || username.value.length < 3 || username.value.length > 20) {
+                    username.classList.add('is-invalid');
+                } else {
+                    username.classList.remove('is-invalid');
+                }
+            }
+
+            // Function to validate passwords
+            function validatePasswords() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.classList.add('is-invalid');
+                    confirmPassword.setCustomValidity('Passwords do not match');
+                } else {
+                    confirmPassword.classList.remove('is-invalid');
+                    confirmPassword.setCustomValidity('');
+                }
+            }
+
+            // Function to validate required fields
+            function validateField(field) {
+                if (!field.checkValidity()) {
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            }
+
+            // Toggle Password Visibility
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const target = document.getElementById(this.dataset.target);
+                    if (target.type === 'password') {
+                        target.type = 'text';
+                        this.innerHTML = '<i class="bi bi-eye-slash"></i>'; // Change icon to "eye-slash"
+                    } else {
+                        target.type = 'password';
+                        this.innerHTML = '<i class="bi bi-eye"></i>'; // Change back to "eye"
+                    }
+                });
+            });
+
+            // Attach input event listeners for real-time validation
+            email.addEventListener('input', validateEmail);
+            username.addEventListener('input', validateUsername);
+            password.addEventListener('input', function () { validatePasswords(); validateField(password); });
+            confirmPassword.addEventListener('input', function () { validatePasswords(); validateField(confirmPassword); });
+
+            addAdminForm.addEventListener('submit', function (event) {
+                validateEmail();
+                validateUsername();
+                validatePasswords();
+                validateField(email);
+                validateField(username);
+                validateField(password);
+                validateField(confirmPassword);
+
+                if (!addAdminForm.checkValidity()) {
+                    event.preventDefault();
+                }
+
+                addAdminForm.classList.add('was-validated');
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Growth Chart
+            const growthCtx = document.getElementById('growthChart');
+            if (growthCtx) {
+                new Chart(growthCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+                        datasets: [
+                            {
+                                label: 'Users',
+                                data: [0, 0, 0, 0, {{ stats.totalUsers }}],
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1,
+                                fill: false
+                            },
+                            {
+                                label: 'Rides',
+                                data: [100, 150, 320, 350, {{ stats.monthlyRides }}],
+                                borderColor: 'rgb(255, 99, 132)',
+                                tension: 0.1,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Distribution Chart
+            const distributionCtx = document.getElementById('distributionChart');
+            if (distributionCtx) {
+                new Chart(distributionCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Active Users', 'Inactive Users'],
+                        datasets: [{
+                            data: [{{ stats.activePercentage }}, {{ 100 - stats.activePercentage }}],
+                            backgroundColor: [
+                                'rgb(75, 192, 192)',
+                                'rgb(201, 203, 207)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

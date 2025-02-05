@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Not Found</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        /* Main Container Styling */
+        .main-container {
+            text-align: center;
+        }
+
+        /* 404 Content Styling */
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .container h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .container .divider {
+            font-size: 2rem;
+            font-weight: lighter;
+            color: #ccc;
+        }
+
+        .container p {
+            font-size: 2rem;
+            font-weight: 400;
+            color: #666;
+        }
+
+        /* Home Button Styling */
+        .home-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        .home-button a {
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-button a:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="container">
+            <h1>404</h1>
+            <div class="divider">|</div>
+            <p>Not Found</p>
+        </div>
+        <div class="home-button">
+            <a href="{{ url_for('home') }}">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

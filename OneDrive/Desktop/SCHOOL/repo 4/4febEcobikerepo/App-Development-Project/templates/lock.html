@@ -1,0 +1,80 @@
+{% extends "base1.html" %}
+{% block title %}Lock Bike{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container {
+        max-width: 500px;
+        margin: 50px auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 1.75rem;
+        color: #2ecc71;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        width: 100%;
+        background-color: #2ecc71;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #27ae60;
+    }
+
+    .error {
+        color: #e74c3c;
+        font-size: 0.875rem;
+        margin-top: 5px;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Lock Bike</h1>
+    <form method="POST" class="form">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="bike_id" class="form-label">{{ form.bike_id.label }}</label>
+            {{ form.bike_id(class="form-control", id="bike_id") }}
+            {% if form.bike_id.errors %}
+                {% for error in form.bike_id.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <button type="submit" class="btn-primary">Lock Bike</button>
+    </form>
+</div>
+{% endblock %}

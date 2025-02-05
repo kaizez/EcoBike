@@ -1,0 +1,12 @@
+<!-- templates/lock_success.html -->
+{% extends "base1.html" %}
+{% block title %}Success{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h1>Success!</h1>
+    <p>Your bike has been successfully locked/unlocked.</p>
+    <br>
+    <a href="{{ url_for('view_orders') }}" class="btn btn-primary" style="text-decoration: none;">View Your Orders</a>
+</div>
+{% endblock %}

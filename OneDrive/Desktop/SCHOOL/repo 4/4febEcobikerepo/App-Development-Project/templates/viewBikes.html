@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}EcoBike - Bikes Available{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Bike Catalog</h1>
+
+<div>
+  {% if count == 0 %}
+    <p>No bikes are currently available.</p>
+  {% elif count == 1 %}
+    <p>We have 1 bike available for you!</p>
+  {% else %}
+    <p>We have {{ count }} bikes available for you!</p>
+  {% endif %}
+</div>
+
+<div class="catalog-container">
+  {% for bike_id, bike in bikes.items() %}
+  <div class="bike-card">
+    <!-- Bike Image -->
+    {% if bike.get('upload_bike_image') %}
+      <img src="{{ url_for('static', filename='uploads/' + bike['upload_bike_image']) }}" alt="{{ bike.get('bike_name', 'Unknown Bike') }}" class="bike-image">
+    {% else %}
+      <img src="{{ url_for('static', filename='uploads/default_image.jpg') }}" alt="Default Image" class="bike-image">
+    {% endif %}
+
+    <!-- Bike Details -->
+    <h4>{{ bike.get('bike_name', 'Unknown Bike') }}</h4>
+    <p>Price: ${{ bike.get('price', 'N/A') }}</p>
+    <p>Seats: {{ bike.get('seating_capacity', 'N/A') }}</p>
+    <p>Engine: {{ bike.get('engine_output', 'N/A') }} W</p>
+    <p>Transmission: {{ bike.get('transmission_type', 'N/A') }}</p>
+
+    <!-- Add to Cart Form -->
+    <form action="{{ url_for('add_to_cart', bike_id=bike_id) }}" method="POST">
+        <button type="submit" class="btn btn-success">Add to Cart</button>
+    </form>
+
+    <!-- Stock Quantity Below Button -->
+    <p class="quantity-info"><strong>Stock Quantity:</strong> {{ bike.get('stock_quantity', 'N/A') }}</p>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

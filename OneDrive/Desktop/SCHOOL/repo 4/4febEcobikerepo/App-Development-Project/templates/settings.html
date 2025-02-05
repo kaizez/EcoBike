@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Account Settings</h2>
+
+    <div class="card shadow p-4">
+        <div class="text-center">
+            <h5>Current Profile Picture</h5>
+            <img src="{{ url_for('static', filename='profile_pics/' + user.get_profile_picture()) }}" 
+                 class="rounded-circle img-fluid" 
+                 style="width: 150px; height: 150px; object-fit: cover;" 
+                 alt="Profile Picture">
+        </div>
+
+        <form action="{{ url_for('settings') }}" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="profile_picture" class="form-label">Upload New Profile Picture (PNG/JPG):</label>
+                <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept=".png, .jpg, .jpeg" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Profile Picture</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

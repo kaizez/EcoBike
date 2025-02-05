@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Update Bike{% endblock %}
+
+{% block content %}
+<h1>Update Bike</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="bike_name">Bike Name</label>
+        <input type="text" class="form-control" id="bike_name" name="bike_name" value="{{ form.bike_name.data }}">
+    </div>
+    <div class="form-group">
+        <label for="price">Price</label>
+        <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ form.price.data }}">
+    </div>
+    <div class="form-group">
+        <label for="transmission_type">Transmission Type</label>
+        <input type="text" class="form-control" id="transmission_type" name="transmission_type" value="{{ form.transmission_type.data }}">
+    </div>
+    <div class="form-group">
+        <label for="seating_capacity">Seating Capacity</label>
+        <input type="number" class="form-control" id="seating_capacity" name="seating_capacity" value="{{ form.seating_capacity.data }}">
+    </div>
+    <div class="form-group">
+        <label for="engine_output">Engine Output (W)</label>
+        <input type="number" class="form-control" id="engine_output" name="engine_output" value="{{ form.engine_output.data }}">
+    </div>
+    <div class="form-group">
+        <label for="stock_quantity">Stock Quantity</label>
+        <input type="number" class="form-control" id="stock_quantity" name="stock_quantity" value="{{ form.stock_quantity.data }}">
+    </div>
+    <div class="form-group">
+        <label for="upload_bike_image">Upload Bike Image</label>
+        <input type="file" class="form-control-file" id="upload_bike_image" name="upload_bike_image">
+    </div>
+    <button type="submit" class="btn btn-primary">Update Bike</button>
+</form>
+{% endblock %}
