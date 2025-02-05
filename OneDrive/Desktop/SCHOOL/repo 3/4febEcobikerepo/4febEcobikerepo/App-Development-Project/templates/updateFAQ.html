@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Update FAQ{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Update FAQ</h1>
+    <form method="POST" action="">
+        <div class="form-group">
+            {{ form.question.label }}
+            {{ form.question(class="form-control") }}
+        </div>
+        <div class="form-group mt-3">
+            {{ form.answer.label }}
+            {{ form.answer(class="form-control") }}
+        </div>
+        <input type="submit" value="Update" class="btn btn-primary mt-3">
+    </form>
+</div>
+{% endblock %}

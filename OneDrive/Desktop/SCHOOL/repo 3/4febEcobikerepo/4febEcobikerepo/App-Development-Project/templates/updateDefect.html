@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}Update Defect Status{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+
+<h1 class="display-4 mb-4">Update Defect Status</h1>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <form method="POST" action="">
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Report ID:</span>
+            </div>
+            <div class="col-md-9">
+              <input type="text" class="form-control form-control-lg text-center" value="{{ defect.get_report_id() }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Bike ID:</span>
+            </div>
+            <div class="col-md-9">
+              <input type="text" class="form-control form-control-lg text-center" value="{{ defect.get_bike_id() }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Defect Type:</span>
+            </div>
+            <div class="col-md-9">
+              <input type="text" class="form-control form-control-lg text-center" value="{{ defect.get_defect_type() }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Date Found:</span>
+            </div>
+            <div class="col-md-9">
+              <input type="text" class="form-control form-control-lg text-center" value="{{ defect.get_date_found() }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Location:</span>
+            </div>
+            <div class="col-md-9">
+              <textarea class="form-control form-control-lg text-center" readonly rows="3">{{ defect.get_bike_location() }}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Severity:</span>
+            </div>
+            <div class="col-md-9">
+              <input type="text" class="form-control form-control-lg text-center" value="{{ defect.get_severity() }}" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Description:</span>
+            </div>
+            <div class="col-md-9">
+              <textarea class="form-control form-control-lg text-center" readonly rows="4">{{ defect.get_description() }}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg fw-bold">Status:</span>
+            </div>
+            <div class="col-md-9">
+              {{ form.status(class="form-control form-control-lg text-center") }}
+              {% if form.status.errors %}
+                {% for error in form.status.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <input type="submit" value="Update" class="btn btn-success btn-lg rounded-pill"/>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-control[readonly] {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+  }
+
+  .form-control {
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+  }
+
+  .form-control-lg {
+    padding: 0.8rem 1rem;
+  }
+
+  .form-label-lg {
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .btn-success {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock %}

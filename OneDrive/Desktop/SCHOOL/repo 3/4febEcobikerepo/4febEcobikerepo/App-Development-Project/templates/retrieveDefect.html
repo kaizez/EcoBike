@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Retrieve Issues{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="display-4 mb-4">Retrieve Issues</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        {% if category == "error" %}
+          <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div class="mb-4">
+    {% if count == 0 %}
+    <p class="lead">There are no issues reported.</p>
+    {% elif count == 1 %}
+    <p class="lead">There is 1 issue reported.</p>
+    {% else %}
+    <p class="lead">There are {{ count }} issues reported.</p>
+    {% endif %}
+  </div>
+
+  <!-- Search Bar for Filtering Bike IDs with Show All Button -->
+  <div class="mb-4">
+    <form method="POST" action="{{ url_for('retrieve_defect') }}" class="d-flex align-items-center">
+      <input type="text" name="search_bike_id" class="form-control me-2" placeholder="Enter Bike ID to search...">
+      <button type="submit" class="btn btn-primary me-2">Search</button>
+      <a href="{{ url_for('retrieve_defect') }}" class="btn btn-secondary">All</a>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-light">
+        <tr>
+          <th class="fw-bold">Report ID</th>
+          <th class="fw-bold">Bike ID</th>
+          <th class="fw-bold">Defect Type</th>
+          <th class="fw-bold">Date Found</th>
+          <th class="fw-bold">Bike Location</th>
+          <th class="fw-bold">Severity</th>
+          <th class="fw-bold">Description</th>
+          <th class="fw-bold">Status</th>
+          <th class="fw-bold">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+        {% for defect in defects_list %}
+          <tr>
+            <td>{{ defect.get_report_id() }}</td>
+            <td>{{ defect.get_bike_id() }}</td>
+            <td>{{ defect.get_defect_type() }}</td>
+            <td>{{ defect.get_date_found() }}</td>
+            <td>{{ defect.get_bike_location() }}</td>
+            <td>{{ defect.get_severity() }}</td>
+            <td>{{ defect.get_description() }}</td>
+            <td>
+              <a href="{{ url_for('update_defect', id=defect.get_report_id()) }}"
+                 class="status-link status-{{ defect.get_status().lower() }}">
+                {{ defect.get_status() }}
+              </a>
+            </td>
+            <td>
+              <form action="{{ url_for('delete_defect', id=defect.get_report_id()) }}" method="POST">
+                <button type="button" class="btn btn-danger btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#myModal_{{defect.get_report_id()}}"
+                {% if defect.get_status() != 'Repaired' and defect.get_status() != 'Closed' %}disabled{% endif %}>
+                    Delete
+                </button>
+
+                <div class="modal" id="myModal_{{defect.get_report_id()}}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title fw-bold">Delete Confirmation</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                Are you sure you want to delete the issue with Report ID: {{ defect.get_report_id() }}?
+                            </div>
+
+                            <div class="modal-footer">
+                                <input type="submit" value="Delete" class="btn btn-danger rounded-pill">
+                                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .table {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .status-link {
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .status-pending {
+    color: #FFC107;
+  }
+
+  .status-repaired {
+    color: #2ecc71;
+  }
+
+  .status-closed {
+    color: #DC3545;
+  }
+
+  .status-link:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .status-pending:hover {
+    color: #FFC107;
+  }
+
+  .status-repaired:hover {
+    color: #2ecc71;
+  }
+
+  .status-closed:hover {
+    color: #DC3545;
+  }
+</style>
+{% endblock %}

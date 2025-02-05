@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}Report Defect{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+
+<h1 class="display-4 mb-4">Report Defect</h1>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <form method="POST" action="">
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg">{{ form.bike_id.label.text }}:</span>
+            </div>
+            <div class="col-md-9">
+              {{ form.bike_id(class="form-control form-control-lg text-center", placeholder="Enter Bike ID") }}
+              {% if form.bike_id.errors %}
+                {% for error in form.bike_id.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg">{{ form.defect_type.label.text }}:</span>
+            </div>
+            <div class="col-md-9">
+              {{ form.defect_type(class="form-control form-control-lg text-center", placeholder="Select") }}
+              {% if form.defect_type.errors %}
+                {% for error in form.defect_type.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg">{{ form.date_found.label.text }}:</span>
+            </div>
+            <div class="col-md-9">
+              {{ form.date_found(class="form-control form-control-lg text-center", placeholder="dd/mm/yyyy") }}
+              {% if form.date_found.errors %}
+                {% for error in form.date_found.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg">{{ form.bike_location.label.text }}:</span>
+            </div>
+            <div class="col-md-9">
+              {{ form.bike_location(class="form-control form-control-lg text-center", placeholder="Enter Bike Location", rows="3") }}
+              {% if form.bike_location.errors %}
+                {% for error in form.bike_location.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg">{{ form.severity.label.text }}:</span>
+            </div>
+            <div class="col-md-9">
+              <div>
+                {% for subfield in form.severity %}
+                <div class="form-check form-check-inline">
+                  {{ subfield(class="form-check-input") }}
+                  {{ subfield.label(class="form-check-label") }}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-3 text-start">
+              <span class="form-label-lg">{{ form.description.label.text }}:</span>
+            </div>
+            <div class="col-md-9">
+              {{ form.description(class="form-control form-control-lg text-center", placeholder="Enter Description of the Defect", rows="4") }}
+              {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <input type="submit" value="Submit" class="btn btn-success btn-lg rounded-pill"/>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="bottom-shape"></div>
+</div>
+
+<style>
+  .form-control::placeholder {
+    text-align: center;
+  }
+
+  .form-control {
+    margin: 0 auto;
+    height: auto;
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+  }
+
+  .text-danger {
+    display: block;
+    text-align: center;
+    margin-top: 0.25rem;
+  }
+
+  .form-control-lg {
+    padding: 0.8rem 1rem;
+  }
+
+  .form-label-lg {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .btn-success {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-check-input:checked {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+  }
+
+  .bottom-shape {
+    position: fixed;
+    bottom: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.8;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+</style>
+{% endblock %}

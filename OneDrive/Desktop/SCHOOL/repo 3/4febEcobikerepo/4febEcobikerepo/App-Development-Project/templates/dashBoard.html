@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}EcoBike - Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Title -->
+    <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <hr>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="dashboard-content">
+
+        <!-- Weekly Leaderboard Section -->
+        <div class="leaderboard">
+            <h3>Weekly Leaderboard</h3>
+            <ul>
+                {% for user in leaderboard %}
+                <li class="leaderboard-item">
+                    <div class="user-info">
+                        <span class="avatar" style="background-color: {{ user.color }};">{{ user.avatar }}</span>
+                        <span>{{ user.name }}</span>
+                    </div>
+                    <span class="change {{ user.change }}" title="{{ 'Rank Up' if user.change == 'up' else 'Rank Down' }}">
+                        {{ '▲' if user.change == 'up' else '▼' }}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats">
+    <div class="stat-card">
+        <h4>Total Distance</h4>
+        <p>{{ total_miles | default(0) | round(2) }} km</p>
+    </div>
+    <div class="stat-card">
+        <h4>Average Speed</h4>
+        <p>{{ avg_speed | default(0) | round(2) }} km/h</p>
+    </div>
+    <div class="stat-card">
+        <h4>Total Carbon Emissions</h4>
+        <p>{{ carbon_emissions | default(0) | round(2) }} kg CO₂</p>
+    </div>
+    <div class="stat-card">
+        <h4>Total Duration</h4>
+        <p>{{ duration | default("N/A") }}</p>
+    </div>
+</div>
+
+        <div class="latest-track">
+    <div class="track-container">
+        <!-- Route Visualization -->
+        <div class="route-visual text-center" style="margin-top: 20px;">
+            <h4 class="mt-3">Track Visualization</h4>
+            {% if svg_points %}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="300" height="150">
+                <polyline points="{{ svg_points }}" fill="none" stroke="black" stroke-width="4" />
+            </svg>
+            {% endif %}
+        </div>
+
+        <!-- Track Details -->
+        {% if total_miles > 0 %}
+        <div class="track-details mt-3" style="margin-top: 10px;">
+            <p><strong>Points Earned:</strong> 470</p>
+            <p><strong>Total Distance:</strong> {{ total_miles | round(2) }} km</p>
+            <p><strong>Carbon Saved:</strong> {{ carbon_emissions | default(0) | round(2) }} kg CO₂</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Register</h2>
+
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        <form action="{{ url_for('register') }}" method="POST" id="registerForm" novalidate>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username:</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                       required minlength="3" maxlength="20" pattern="^[a-zA-Z0-9]+$">
+                                <div class="form-text">Username must be 3-20 characters long and contain only letters and numbers.</div>
+                                <div class="invalid-feedback">Username must be 3-20 characters long and contain only letters and numbers.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password:</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback">Password is required.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">Confirm Password:</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirm_password">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback">Passwords do not match.</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Register</button>
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('login') }}" class="text-decoration-none">Already have an account? Login</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const registerForm = document.getElementById('registerForm');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirm_password');
+            const username = document.getElementById('username');
+            const email = document.getElementById('email');
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+
+            // Function to validate passwords
+            function validatePasswords() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Passwords do not match');
+                    confirmPassword.classList.add('is-invalid');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                    confirmPassword.classList.remove('is-invalid');
+                }
+            }
+
+            // Function to validate username
+            function validateUsername() {
+                if (!/^[a-zA-Z0-9]+$/.test(username.value) || username.value.length < 3 || username.value.length > 20) {
+                    username.setCustomValidity('Username must contain only letters and numbers, 3-20 characters long');
+                    username.classList.add('is-invalid');
+                } else {
+                    username.setCustomValidity('');
+                    username.classList.remove('is-invalid');
+                }
+            }
+
+            // Function to validate email
+            function validateEmail() {
+                if (!email.value.includes('@') || !email.value.includes('.')) {
+                    email.classList.add('is-invalid');
+                } else {
+                    email.classList.remove('is-invalid');
+                }
+            }
+
+            // Function to validate fields on input
+            function validateField(field) {
+                if (!field.checkValidity()) {
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            }
+
+            // Toggle Password Visibility
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const target = document.getElementById(this.dataset.target);
+                    if (target.type === 'password') {
+                        target.type = 'text';
+                        this.innerHTML = '<i class="bi bi-eye-slash"></i>'; // Change icon to "eye-slash"
+                    } else {
+                        target.type = 'password';
+                        this.innerHTML = '<i class="bi bi-eye"></i>'; // Change back to "eye"
+                    }
+                });
+            });
+
+            // Attach input event listeners for real-time validation
+            password.addEventListener('input', function () { validatePasswords(); validateField(password); });
+            confirmPassword.addEventListener('input', function () { validatePasswords(); validateField(confirmPassword); });
+            username.addEventListener('input', function () { validateUsername(); validateField(username); });
+            email.addEventListener('input', function () { validateEmail(); validateField(email); });
+
+            registerForm.addEventListener('submit', function (event) {
+                validatePasswords();
+                validateUsername();
+                validateEmail();
+                validateField(email);
+                validateField(username);
+                validateField(password);
+                validateField(confirmPassword);
+
+                if (!registerForm.checkValidity()) {
+                    event.preventDefault();
+                }
+
+                registerForm.classList.add('was-validated');
+            });
+        });
+    </script>
+</body>
+</html>

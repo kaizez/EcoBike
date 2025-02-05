@@ -1,0 +1,49 @@
+{% extends "base1.html" %}
+{% block title %}Edit Bike ID{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Edit Bike ID</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.id_string.label }}
+            {{ form.id_string(class="form-control") }}
+            {% if form.id_string.errors %}
+            <div class="text-danger">
+                {% for error in form.id_string.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.bike_name.label }}
+            {{ form.bike_name(class="form-control") }}
+            {% if form.bike_name.errors %}
+            <div class="text-danger">
+                {% for error in form.bike_name.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.stock_quantity.label }}
+            {{ form.stock_quantity(class="form-control") }}
+            {% if form.stock_quantity.errors %}
+            <div class="text-danger">
+                {% for error in form.stock_quantity.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add/Update Bike ID</button>
+        <a href="{{ url_for('manage_ids') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

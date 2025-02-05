@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Issue Submitted{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+  <div class="text-center">
+    <div class="mb-4">
+        <svg width="60" height="60" viewBox="0 0 30 30" fill="#2ecc71">
+          <circle cx="15" cy="15" r="12" fill="#2ecc71" />
+          <path d="M10 15 L15 20 L20 10" stroke="#ffffff" stroke-width="2" fill="none" />
+        </svg>
+    </div>
+    <h1 class="display-4 mb-4">Thank You!</h1>
+    <p class="lead mb-4"><i>This issue will be reviewed.</i></p>
+    <a href="{{ url_for('home') }}" class="btn btn-success btn-lg rounded-pill">Click here to go to Dashboard</a>
+  </div>
+</div>
+
+<style>
+  .btn-success {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock %}

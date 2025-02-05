@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}User List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Registered Users</h2>
+    <div class="row">
+        {% for user in users %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow">
+                    <img src="{{ url_for('static', filename='profile_pics/' + user.get_profile_picture()) }}" 
+                         class="card-img-top img-fluid mx-auto mt-3 rounded-circle" 
+                         style="width: 200px; height: 200px; object-fit: cover;"
+                         alt="{{ user.get_username() }}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ user.get_username() }}</h5>
+                        <p class="card-text"><strong>Email:</strong> {{ user.get_email() }}</p>
+                        <p class="card-text"><strong>Points:</strong> {{ user.get_points() }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

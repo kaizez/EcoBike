@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}EcoBike - Manage Bikes{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Bike Catalog</h1>
+
+<div>
+  {% if count == 0 %}
+    <p>There are no bikes available.</p>
+  {% elif count == 1 %}
+    <p>There is 1 bike available.</p>
+  {% else %}
+    <p>There are {{ count }} bikes available.</p>
+  {% endif %}
+</div>
+
+<div class="catalog-container">
+  {% for bike_id, bike in bikes.items() %}
+    <div class="bike-card">
+      <img src="{{ url_for('static', filename='uploads/' + bike['upload_bike_image']) }}" alt="{{ bike['bike_name'] }}" class="bike-image">
+      <h4>{{ bike['bike_name'] }}</h4>
+      <p>Price: ${{ bike['price'] }}</p>
+      <p>Seats: {{ bike['seating_capacity'] }}</p>
+      <p>Engine: {{ bike['engine_output'] }} W</p>
+      <p>Transmission: {{ bike['transmission_type'] }}</p>
+
+      <div class="actions">
+        <a href="{{ url_for('update_bike', id=bike_id) }}" class="btn btn-warning">Update</a>
+
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal_{{ bike_id }}">
+          Delete
+        </button>
+      </div>
+
+      <!-- Add Quantity Left below the buttons -->
+      <p class="quantity-info"><strong>Quantity Left:</strong> {{ bike['stock_quantity'] }}</p>
+    </div>
+
+    <div class="modal fade" id="deleteModal_{{ bike_id }}" tabindex="-1" aria-labelledby="deleteModalLabel_{{ bike_id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel_{{ bike_id }}">Delete Confirmation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete the bike <strong>{{ bike['bike_name'] }}</strong>?
+          </div>
+          <div class="modal-footer">
+            <form action="{{ url_for('delete_bike', id=bike_id) }}" method="POST">
+              <input type="submit" value="Delete" class="btn btn-danger">
+            </form>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

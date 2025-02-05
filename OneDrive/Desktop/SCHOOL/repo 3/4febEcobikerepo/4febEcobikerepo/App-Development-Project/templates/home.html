@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}ECOBIKE{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row align-items-center min-vh-100">
+    <div class="col-md-6 ps-md-5">
+      <h1 class="display-4 fw-bold mb-4" style="font-size: 3.5rem;">
+        <p>Start riding</p>
+        <p>within minutes</p>
+        <p>with ECOBIKE</p>
+      </h1>
+      <!-- <p class="lead mb-4">
+        <p>Rent a bike in minutes from any carpark</p>
+         <p>with no deposit or membership fees.</p>
+        <p>Simply log in and rent your bike</p>
+      </p> -->
+      <br>
+      <br>
+      <a href="/viewBikes" class="btn btn-success btn-lg rounded-pill px-4">Book Now</a>
+    </div>
+    <div class="col-md-6">
+      <div class="p-4">
+        <img src="{{ url_for('static', filename='/img/landingpgimg.png') }}" alt="Electric Bike" class="img-fluid rounded-4 shadow">
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .navbar {
+    background-color: transparent !important;
+    padding: 1rem 2rem;
+  }
+  .btn-success {
+    background-color: #2ecc71;
+    border-color: #2ecc71;
+  }
+  .btn-success:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+  }
+  .rounded-4 {
+    border-radius: 2rem !important;
+  }
+</style>
+{% endblock %}

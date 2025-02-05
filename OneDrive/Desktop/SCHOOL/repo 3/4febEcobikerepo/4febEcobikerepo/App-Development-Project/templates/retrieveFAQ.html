@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Manage FAQs{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Manage FAQs</h1>
+    <a href="/createFAQ" class="btn btn-primary mb-3">Create New FAQ</a>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>FAQ ID</th>
+                    <th>Question</th>
+                    <th>Answer</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for faq in faqs_list %}
+                <tr>
+                    <td>{{ faq.get_faq_id() }}</td>
+                    <td>{{ faq.get_question() }}</td>
+                    <td>{{ faq.get_answer() }}</td>
+                    <td>
+                        <a href="/updateFAQ/{{faq.get_faq_id()}}" class="btn btn-warning btn-sm">Update</a>
+                        <form action="/deleteFAQ/{{faq.get_faq_id()}}" method="POST" style="display: inline;">
+                            <input type="submit" value="Delete" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this FAQ?');">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

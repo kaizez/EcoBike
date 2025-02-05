@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}EcoBike - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Admin Dashboard Header -->
+    <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <hr>
+    </div>
+
+    <!-- Search for Active Users -->
+    <div class="mt-5">
+        <h3>Search Active Users</h3>
+        <form method="POST" action="/searchUser" class="form-inline">
+            <div class="form-group mr-2">
+                <input
+                    type="text"
+                    name="search_query"
+                    class="form-control"
+                    placeholder="Enter user email or name"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    {% if search_results %}
+    <div class="mt-5">
+        <h3>Search Results</h3>
+        <ul>
+            {% for user in search_results %}
+            <li>
+                <a href="{{ url_for('user_dashboard', user_id=user.user_id) }}">
+                    {{ user.name }} ({{ user.email }})
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- Debugging Output for Search Results -->
+        <p>Debug Search Results: {{ search_results }}</p>
+    </div>
+    {% elif search_query %}
+    <div class="mt-5">
+        <h3>No Results Found</h3>
+        <p>No users match the search query "{{ search_query }}". Try again with a different keyword.</p>
+    </div>
+    {% endif %}
+
+    <!-- Upload File for Selected User -->
+    {% if search_results %}
+    <div class="mt-5">
+        <h3>Upload GPX File for Selected User</h3>
+        <form method="POST" enctype="multipart/form-data" action="/uploadForUser">
+            <div class="form-group">
+                <label for="user_select">Select User:</label>
+                <select id="user_select" name="user_id" class="form-control" required>
+                    {% for user in search_results %}
+                    <option value="{{ user.email }}">{{ user.name }} ({{ user.email }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group mt-3">
+                <label for="gpx_file_user">Select GPX File:</label>
+                <input
+                    type="file"
+                    class="form-control-file"
+                    id="gpx_file_user"
+                    name="gpx_file"
+                    accept=".gpx"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-success mt-4">Upload File</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Dashboard Summary -->
+    <div class="mt-5">
+        <h3>Dashboard Summary</h3>
+        <ul>
+            <li><strong>Total Distance:</strong> {{ gpx_details.total_distance | default(0) | round(2) }} km</li>
+            <li><strong>Average Speed:</strong> {{ gpx_details.avg_speed | default(0) | round(2) }} km/h</li>
+            <li><strong>Total Carbon Emissions:</strong> {{ gpx_details.carbon_emissions | default(0) | round(2) }} kg CO₂</li>
+            <li><strong>Total Duration:</strong> {{ gpx_details.duration | default('N/A') }}</li>
+            <li><strong>Bike Count:</strong> {{ bike_count | default(0) }}</li>
+        </ul>
+    </div>
+
+    <!-- Reset Dashboard Button -->
+    <div class="mt-5">
+        <h3>Actions</h3>
+        <form method="POST" action="/resetDashboard">
+            <button type="submit" class="btn btn-danger">Reset Dashboard</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
