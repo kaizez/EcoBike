@@ -23,10 +23,10 @@ google login: brixbot35@gmail.com
 
 EcoBike is a collaborative effort by a dedicated team of developers and cycling enthusiasts. Meet the team:
 
-- **Wei Kiat** - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-- **Rais** - Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-- **Jun Hao** - Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-- **Teng Hang** - Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+- **Wei Kiat** 
+- **Rais**
+- **Jun Hao**
+- **Teng Hang**
 
 ---
 
