@@ -544,7 +544,7 @@ def user_dashboard():
 
     # Pass data to the template
     return render_template(
-        'dashboard.html',
+        'dashBoard.html',
         leaderboard=leaderboard,  # Pass leaderboard to template
         svg_points=svg_points,
         total_miles=total_miles,
@@ -2697,4 +2697,4 @@ def page_not_found(e):
 if __name__ == '__main__':
     initialize_rewards()
     initialize_bike_products()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
